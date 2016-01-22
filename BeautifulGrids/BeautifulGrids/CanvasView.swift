@@ -19,14 +19,6 @@ class CanvasView: UIView , UIScrollViewDelegate{
     var slider = UISlider()
     override func awakeFromNib() {
         self.backgroundColor = UIColor.whiteColor()
-        self.frame = CGRect(x: 0,
-            y: (UIScreen.mainScreen().bounds.height/2 - (UIScreen.mainScreen().bounds.width/2)),
-            width: UIScreen.mainScreen().bounds.width,
-            height: UIScreen.mainScreen().bounds.width)
-
-        self.setLayout()
-        self.setSlider()
-        self.initCanvas()
         self.addSingleTapRecogniser()
         self.layer.borderColor = UIColor.whiteColor().CGColor
         self.backgroundColor = UIColor.yellowColor()
@@ -73,14 +65,15 @@ class CanvasView: UIView , UIScrollViewDelegate{
     {
         switch CanvasSetting.canvasPattern
         {
-        case "portrait":
-            slider.frame = CGRect(x: 0, y: 0, width: scrollViewCanvas.frame.width, height: 30)
+        case "portrait":CGRect(x: -(scrollViewCanvas.frame.width-30)/2, y: scrollViewCanvas.frame.height/2 + 15, width: scrollViewCanvas.frame.width, height: 30)
             slider.transform = CGAffineTransformRotate(slider.transform, CGFloat(M_PI_2))
+            slider.maximumValue = Float(slider.frame.height)
             break
         case "landscape":
-            slider.frame = CGRect(x: 30 , y: scrollViewCanvas.bounds.origin.y, width: scrollViewCanvas.frame.width, height: 30)
+            slider.frame = CGRect(x: 30 , y: scrollViewCanvas.frame.origin.y, width: scrollViewCanvas.frame.width, height: 30)
             print(scrollViewCanvas.frame.origin.x)
             print(scrollViewCanvas.frame.width*2)
+            slider.maximumValue = Float(slider.frame.width)
             break
         case "mugs":
             slider.frame = CGRect(x: scrollViewCanvas.bounds.origin.x, y: scrollViewCanvas.bounds.origin.y , width: scrollViewCanvas.frame.width, height: 30)
@@ -90,7 +83,7 @@ class CanvasView: UIView , UIScrollViewDelegate{
         }
         slider.addTarget(self, action: "sliderValueChanged:", forControlEvents: .ValueChanged)
         slider.minimumValue = 0.0
-        slider.maximumValue = Float(slider.frame.width)
+        slider.minimumTrackTintColor = UIColor(red: 251.0/255.0, green: 64.0/255.0, blue: 78.0/255.0, alpha: 1)
         self.addSubview(slider)
     }
     

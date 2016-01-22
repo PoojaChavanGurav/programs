@@ -13,7 +13,6 @@
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" bounces="NO" indicatorStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="COv-re-I35">
                     <rect key="frame" x="30" y="20" width="320" height="320"/>
-                    <color key="backgroundColor" red="1" green="0.10074013157894737" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
                         <outlet property="delegate" destination="iN0-l3-epB" id="daG-69-pJC"/>
                     </connections>

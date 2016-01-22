@@ -24,10 +24,13 @@ class SingleElement: UIView,UIScrollViewDelegate{
     var isDelegate : ImageSelection?
     var img :UIImage!
     var imageEdit = UIImageView()
-    
+    var sourceImage = CIImage()
+    var filter :CIFilter!
+    var context = CIContext(options: nil)
+
     override func awakeFromNib() {
         scrollImage.hidden = true
-        self.layer.borderWidth = 0
+        self.layer.borderWidth = 1  
         self.layer.borderColor = UIColor.whiteColor().CGColor
         addDoubleTapRecogniser()
         addLongPressRecogniser()
@@ -70,7 +73,12 @@ class SingleElement: UIView,UIScrollViewDelegate{
         self.layer.borderColor = UIColor.blueColor().CGColor
         
     }
-    
+    func addFilters()
+    {
+        let imgTemp = self.imageEdit.image
+        sourceImage = CIImage(image: imgTemp!)!
+        filter = CIFilter(name: "CIColorControls")
+    }
     @IBAction func ButtonAdd(sender: UIButton)
     {
         // call the image picker to select an image on click of the button
@@ -83,11 +91,11 @@ class SingleElement: UIView,UIScrollViewDelegate{
         scrollImage.delegate = self
         scrollImage.hidden = false
         assignImage()
+        addFilters()
         assignZoom()
         centerZoomedImage()
     }
     func assignImage()
-        
     {
         scrollImage.zoomScale = 1
         imageEdit.image = img
@@ -126,27 +134,10 @@ class SingleElement: UIView,UIScrollViewDelegate{
     }
     
     
-    func setPadding(padding :CGFloat, arrayNodeData : NSArray)
+    func setPadding(padding :CGFloat)
     {
         // set the borderWidth of this frame + the parent frame
-        let parentView = self.superview
-        parentView?.layer.borderWidth = padding
         self.layer.borderWidth = padding
-        
-        let pW = (parentView?.frame.width)! - (padding*2)
-        let pH = (parentView?.frame.height)! - (padding*2)
-        let vertex = arrayNodeData[self.tag]
-        var X = CGFloat(vertex["x"] as! Double)
-        var Y = CGFloat(vertex["y"] as! Double)
-        var W = CGFloat(vertex["w"] as! Double)
-        var H = CGFloat(vertex["h"] as! Double)
-
-        X = padding + pW * X
-        W = pW * W
-        Y = padding + pH * Y
-        H = pH * H
-
-        self.frame = CGRect(x: X, y: Y, width: W, height: H)
     }
     
     func setCornerRadius(radius : CGFloat)
@@ -158,5 +149,22 @@ class SingleElement: UIView,UIScrollViewDelegate{
             self.scrollImage.layer.cornerRadius = radius
             self.imageEdit.layer.cornerRadius = radius
         }
+    }
+    
+    func setBrightness(bright :NSNumber)
+    {
+        filter.setValue(bright, forKey: "inputBrightness")
+        filter?.setValue(sourceImage, forKey: kCIInputImageKey)
+        let cgImg = context.createCGImage(filter!.outputImage!, fromRect: (filter!.outputImage?.extent)!)
+        self.imageEdit.image = UIImage(CGImage: cgImg)
+    }
+    
+    func setRotatation()
+    {
+        UIView.animateWithDuration(0.5) { () -> Void in
+            self.imageEdit.transform = CGAffineTransformRotate(self.imageEdit.transform,CGFloat(M_PI_2))
+            self.imageEdit.frame = self.frame
+        }
+        
     }
 }

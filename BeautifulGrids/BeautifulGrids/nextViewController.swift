@@ -14,9 +14,11 @@ class nextViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     var imgPick = UIImagePickerController()
     var canvasNib :CanvasView?
     var buttonTag = 0
+    var indicator = false
     @IBOutlet weak var sliderBorderWidth: UISlider!
     @IBOutlet weak var sliderCornerRadius: UISlider!
     
+    @IBOutlet weak var sliderBrightness: UISlider!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -25,21 +27,38 @@ class nextViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.setLayoutView()
         
     }
+    override func viewDidLayoutSubviews() {
+        canvasNib?.frame = CGRectMake(0, self.view.frame.height/2 - self.view.frame.width/2, self.view.frame.width,  self.view.frame.width)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if !indicator
+        {
+            indicator = true
+            canvasNib?.setLayout()
+            canvasNib?.setSlider()
+            canvasNib?.initCanvas()
+            for item in (canvasNib?.arrayOfElements)!
+            {
+                item?.isDelegate = self
+            }
+            
+        }
 
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    
    func setLayoutView()
    {
         // Load the CanvasView on the Temp view
         canvasNib = (NSBundle.mainBundle().loadNibNamed("CanvasView", owner: nil, options: nil)[0] as! CanvasView)
         self.view.addSubview(canvasNib!)
-        for item in (canvasNib?.arrayOfElements)!
-        {
-                item?.isDelegate = self
-        }
+
     }
     
     //MARK: - ImageSelection delegate methods
@@ -99,7 +118,7 @@ class nextViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBAction func sliderBorderWidthValueChanged(sender: UISlider) {
         for item in (canvasNib?.arrayOfElements)!
         {
-            item?.setPadding(CGFloat(sender.value), arrayNodeData: canvasNib!.arrayNodeData)
+            item?.setPadding(CGFloat(sender.value))
         }
     }
     
@@ -109,8 +128,32 @@ class nextViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             item?.setCornerRadius(CGFloat(sender.value))
         }
     }
-
+    
+    @IBAction func sliderBrightnessValueChanged(sender: UISlider) {
+        for item in (canvasNib?.arrayOfElements)!
+        {
+            item?.setBrightness(sender.value)
+        }
+    }
+    
+    @IBAction func barButtonRotate(sender: UIBarButtonItem) {
+        for item in (canvasNib?.arrayOfElements)!
+        {
+            if CGColorEqualToColor(item?.layer.borderColor, UIColor.blueColor().CGColor){
+                item?.setRotatation()
+            }
+        }
+    }
+    
+    @IBAction func barButtonHFlip(sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func barButtonVFlip(sender: UIBarButtonItem) {
+    }
+    @IBAction func barButtonBordered(sender: UIBarButtonItem) {
+    }
 }
+
 
 
 

@@ -11,6 +11,6 @@ import UIKit
 class CanvasSetting: NSObject {
     
     static var canvasGrid = 0
-    static var canvasPattern = "portrait"
+    static var canvasPattern = "square"
 
 }
